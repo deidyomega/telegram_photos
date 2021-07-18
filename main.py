@@ -3,8 +3,6 @@ import sys
 import time
 from dotenv import load_dotenv
 load_dotenv()
-api_id = os.environ['api_id']
-api_hash = os.environ['api_hash']
 
 # Import the client
 from telethon import TelegramClient, events
@@ -12,8 +10,10 @@ from telethon import TelegramClient, events
 
 # Define some variables so the code reads easier
 session = os.environ.get('TG_SESSION', 'printer')
+api_id = os.environ['api_id']
+api_hash = os.environ['api_hash']
 
-client = TelegramClient('printer', api_id, api_hash)
+client = TelegramClient(session, api_id, api_hash)
 
 
 # This is our update handler. It is called when a new update arrives.
