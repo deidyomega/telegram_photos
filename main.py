@@ -7,13 +7,11 @@ load_dotenv()
 # Import the client
 from telethon import TelegramClient, events
 
-
-# Define some variables so the code reads easier
-session = os.environ.get('TG_SESSION', 'printer')
-api_id = os.environ['api_id']
-api_hash = os.environ['api_hash']
-
-client = TelegramClient(session, api_id, api_hash)
+client = TelegramClient(
+    "SESSION",
+    os.environ['api_id'],
+    os.environ['api_hash']
+)
 
 
 # This is our update handler. It is called when a new update arrives.
@@ -23,13 +21,13 @@ async def handler(event):
         return
     if event.message.photo:
         print("Saving Photo")
-        await event.message.download_media("/home/omega/Photos/Telegram")
+        await event.message.download_media(os.environ['FOLDER_PATH'])
     elif event.message.video:
         print("Saving Video")
-        await event.message.download_media("/home/omega/Photos/Telegram")
+        await event.message.download_media(os.environ['FOLDER_PATH'])
     elif event.message.media and not (event.message.sticker):
         print("Saving File")
-        await event.message.download_media("/home/omega/Photos/Telegram")
+        await event.message.download_media(os.environ['FOLDER_PATH'])
     else:
         print("not doing anything")
 
