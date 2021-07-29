@@ -2,3 +2,6 @@
 *.session
 *.session-journal
 venv
+__pycache__
+*.tar
+*.tar.gz
