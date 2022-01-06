@@ -22,12 +22,13 @@ def webdavhandle(filename):
         "webdav_login": os.environ["WEBDAV_LOGIN"],
         "webdav_password": os.environ["WEBDAV_PASSWORD"],
     }
+    webdav_folder_path = os.environ["WEBDAV_FOLDER_PATH"]
 
     client = Client(options)
     client.verify = False
     logger.info("Sending to remote")
     client.upload_sync(
-        remote_path=f"Photos/Telegram/{filename}".replace(
+        remote_path=f"{webdav_folder_path}/{filename}".replace(
             os.environ["FOLDER_PATH"] + "/", ""
         ),
         local_path=filename,
