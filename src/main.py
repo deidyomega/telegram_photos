@@ -17,19 +17,16 @@ logger.info("Creating Client...")
 client = TelegramClient("SESSION", os.environ["API_ID"], os.environ["API_HASH"])
 
 
-webdav_client = Client({
- 'webdav_hostname': os.environ["WEBDAV_HOSTNAME"],
- 'webdav_login': os.environ["WEBDAV_USERNAME"],
- 'webdav_password': os.environ["WEBDAV_PASSWORD"],
-})
-
-webdav_client.verify = False
-
-
 
 async def handle_file_event(event):
     r = await event.message.download_media("temp")
 
+    webdav_client = Client({
+        'webdav_hostname': os.environ["WEBDAV_HOSTNAME"],
+        'webdav_login': os.environ["WEBDAV_USERNAME"],
+        'webdav_password': os.environ["WEBDAV_PASSWORD"],
+    })
+    webdav_client.verify = False
     webdav_client.upload_sync(
         remote_path="Photos/" + Path(r).name,
         local_path=r,
