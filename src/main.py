@@ -12,7 +12,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 load_dotenv()
 
-logger.info("VERSION: 1.0.0")
+logger.info("VERSION: 1.0.1")
 logger.info("Creating Client...")
 client = TelegramClient("SESSION", os.environ["API_ID"], os.environ["API_HASH"])
 
