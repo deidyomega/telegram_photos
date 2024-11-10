@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
 import logging
+from webdav3.client import Client
+from pathlib import Path
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -15,8 +17,24 @@ logger.info("Creating Client...")
 client = TelegramClient("SESSION", os.environ["API_ID"], os.environ["API_HASH"])
 
 
+webdav_client = Client({
+ 'webdav_hostname': os.environ["WEBDAV_HOSTNAME"],
+ 'webdav_login': os.environ["WEBDAV_USERNAME"],
+ 'webdav_password': os.environ["WEBDAV_PASSWORD"],
+})
+
+webdav_client.verify = False
+
+
+
 async def handle_file_event(event):
-    r = await event.message.download_media(os.environ["FOLDER_PATH"])
+    r = await event.message.download_media("temp")
+
+    webdav_client.upload_sync(
+        remote_path="Photos/" + Path(r).name,
+        local_path=r,
+    )
+
     logger.info("Saved to %s", r)
 
 # This is our update handler. It is called when a new update arrives.
