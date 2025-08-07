@@ -12,11 +12,11 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 load_dotenv()
 
-logger.info("VERSION: 1.0.1")
+logger.info("VERSION: 1.0.2")
 logger.info("Creating Client...")
 client = TelegramClient("SESSION", int(os.environ["API_ID"]), os.environ["API_HASH"])
 FOLDER_PATH = Path(os.environ["FOLDER_PATH"])
-
+DEBUG = os.environ["DEBUG"] == "true"
 
 async def handle_file_event(event):
     r = await event.message.download_media(FOLDER_PATH)
@@ -38,7 +38,7 @@ async def handle_file_event(event):
 Note for future:
 delete incoming=True to allow for quick testing
 """
-@client.on(events.NewMessage(incoming=True))
+@client.on(events.NewMessage(incoming=not DEBUG))
 async def handler(event):
     if event.message.photo:
         logger.info("Saving Photo")
