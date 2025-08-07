@@ -34,10 +34,6 @@ async def handle_file_event(event):
     os.rename(r, new_path)
     logger.info("Saved to %s", new_path)
 
-"""
-Note for future:
-delete incoming=True to allow for quick testing
-"""
 @client.on(events.NewMessage(incoming=not DEBUG))
 async def handler(event):
     if event.message.photo:
