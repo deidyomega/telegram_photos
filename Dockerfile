@@ -1,5 +1,5 @@
 # set base image (host OS)
-FROM python:3.9 as builder
+FROM python:3.12 as builder
 
 # set the working directory in the container
 WORKDIR /code
@@ -10,9 +10,9 @@ COPY requirements.txt .
 # install dependencies
 RUN pip install -r requirements.txt
 
-FROM python:3.9-alpine
+FROM python:3.12-alpine
 
-COPY --from=builder /usr/local/lib/python3.9/site-packages/ /usr/local/lib/python3.9/site-packages/
+COPY --from=builder /usr/local/lib/python3.12/site-packages/ /usr/local/lib/python3.12/site-packages/
 
 # copy the content of the local src directory to the working directory
 COPY src/ .

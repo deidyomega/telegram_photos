@@ -3,3 +3,14 @@ __pycache__
 *.tar
 *.tar.gz
 .env
+*.jpg
+*.png
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.webp
+*.gif
+*.mp3
+*.wav

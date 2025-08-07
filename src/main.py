@@ -1,8 +1,8 @@
+import datetime
 import os
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
 import logging
-from webdav3.client import Client
 from pathlib import Path
 
 logging.basicConfig(
@@ -14,31 +14,32 @@ load_dotenv()
 
 logger.info("VERSION: 1.0.1")
 logger.info("Creating Client...")
-client = TelegramClient("SESSION", os.environ["API_ID"], os.environ["API_HASH"])
-
+client = TelegramClient("SESSION", int(os.environ["API_ID"]), os.environ["API_HASH"])
+FOLDER_PATH = Path(os.environ["FOLDER_PATH"])
 
 
 async def handle_file_event(event):
-    r = await event.message.download_media("temp")
+    r = await event.message.download_media(FOLDER_PATH)
+    base_filename = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    extension = Path(r).suffix
 
-    webdav_client = Client({
-        'webdav_hostname': os.environ["WEBDAV_HOSTNAME"],
-        'webdav_login': os.environ["WEBDAV_USERNAME"],
-        'webdav_password': os.environ["WEBDAV_PASSWORD"],
-    })
-    webdav_client.verify = False
-    webdav_client.upload_sync(
-        remote_path="Photos/" + Path(r).name,
-        local_path=r,
-    )
+    new_path = FOLDER_PATH / f"{base_filename}{extension}"
 
-    logger.info("Saved to %s", r)
+    # if path exists, add a number to the filename
+    n = 1
+    while new_path.exists() and n < 1000:
+        new_path = FOLDER_PATH / f"{base_filename}_{n}{extension}"
+        n += 1
 
-# This is our update handler. It is called when a new update arrives.
-@client.on(events.NewMessage)
+    os.rename(r, new_path)
+    logger.info("Saved to %s", new_path)
+
+"""
+Note for future:
+delete incoming=True to allow for quick testing
+"""
+@client.on(events.NewMessage(incoming=True))
 async def handler(event):
-    if event.message.out:
-        return
     if event.message.photo:
         logger.info("Saving Photo")
         await handle_file_event(event)
@@ -48,8 +49,6 @@ async def handler(event):
     elif event.message.media and not (event.message.sticker):
         logger.info("Saving File")
         await handle_file_event(event)
-    else:
-        logger.info("not doing anything")
 
 
 logger.info("Starting...")
