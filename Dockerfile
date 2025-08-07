@@ -1,5 +1,5 @@
 # set base image (host OS)
-FROM python:3.12 as builder
+FROM python:3.12 AS builder
 
 # set the working directory in the container
 WORKDIR /code
